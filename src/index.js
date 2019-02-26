@@ -207,10 +207,12 @@ export const generate = (sheets) => {
 		zip.file(`xl/worksheets/sheet${sheet.id}.xml`, SHEET_XML(sheet));
 	}
 
+	const mimeType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+
 	return {
 		async blob () {
 			if (isNode) { throw new Error('blob not supported on this platform'); }
-			return await zip.generateAsync({ type: 'blob' });
+			return await zip.generateAsync({ type: 'blob', mimeType });
 		},
 		async base64 () {
 			return await zip.generateAsync({ type: 'base64' });
