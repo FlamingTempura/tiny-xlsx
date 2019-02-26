@@ -6,19 +6,42 @@ if (isNode) {
 	fs = require('fs');
 }
 
-const RELS_XML = () => `<?xml version="1.0" encoding="UTF-8"?>
+const RELS_XML = () => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 	<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+		<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+		<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
 		<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
-		<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
-		<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
 	</Relationships>`;
 
-const APP_XML = () => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+const APP_XML = workbook => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 	<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties"
 		        xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
 		<Template></Template>
 		<TotalTime>0</TotalTime>
-		<Application>LifeCourse$Build-1</Application>
+		<Application>LifeCourse</Application>
+		<DocSecurity>0</DocSecurity>
+		<ScaleCrop>false</ScaleCrop>
+		<HeadingPairs>
+			<vt:vector size="${workbook.sheets.length}" baseType="variant">
+				<vt:variant>
+					<vt:lpstr>Worksheets</vt:lpstr>
+				</vt:variant>
+				<vt:variant>
+					<vt:i4>${workbook.sheets.length}</vt:i4>
+				</vt:variant>
+			</vt:vector>
+		</HeadingPairs>
+		<TitlesOfParts>
+			<vt:vector size="${workbook.sheets.length}" baseType="lpstr">
+				${workbook.sheets.map(sheet => `
+				<vt:lpstr>${sheet.title}</vt:lpstr>
+				`)}
+			</vt:vector>
+		</TitlesOfParts>
+		<LinksUpToDate>false</LinksUpToDate>
+		<SharedDoc>false</SharedDoc>
+		<HyperlinksChanged>false</HyperlinksChanged>
+		<AppVersion>1.0000</AppVersion>
 	</Properties>`;
 
 const CORE_XML = workbook => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -57,22 +80,17 @@ const SHEET_XML = sheet => `<?xml version="1.0" encoding="UTF-8" standalone="yes
 		</sheetPr>
 		<dimension ref="A1:${sheet.extent}"/>
 		<sheetViews>
-			<sheetView showFormulas="false" showGridLines="true" showRowColHeaders="true" showZeros="true" 
-					rightToLeft="false" tabSelected="true" showOutlineSymbols="true" defaultGridColor="true" 
-					view="normal" topLeftCell="A1" colorId="64" zoomScale="79" zoomScaleNormal="79" 
-					zoomScalePageLayoutView="100" workbookViewId="0">
-				<selection pane="topLeft" activeCell="A1" activeCellId="0" sqref="A1"/>
-			</sheetView>
+			<sheetView tabSelected="1" zoomScale="79" zoomScaleNormal="79" workbookViewId="0"/>
 		</sheetViews>
-		<sheetFormatPr defaultRowHeight="12.8" zeroHeight="false" outlineLevelRow="0" outlineLevelCol="0"></sheetFormatPr>
+		<sheetFormatPr defaultRowHeight="12.8"></sheetFormatPr>
 		<cols>
-			<col collapsed="false" customWidth="false" hidden="false" outlineLevel="0" max="1025" min="1" style="0" width="11.52"/>
+			<col max="1025" min="1" style="0" width="11.52"/>
 		</cols>
 		<sheetData>
 			${sheet.rows.map(row => `
-			<row r="${row.id}" customFormat="false" ht="12.8" hidden="false" customHeight="false" outlineLevel="0" collapsed="false">
+			<row r="${row.id}">
 				${row.cells.map(cell => `
-				<c r="${cell.id}" s="0" t="${cell.type}"><v>${cell.value}</v></c>
+				<c r="${cell.id}" t="${cell.type}"><v>${cell.value}</v></c>
 				`).join('\n')}
 			</row>
 			`).join('\n')}
@@ -80,9 +98,9 @@ const SHEET_XML = sheet => `<?xml version="1.0" encoding="UTF-8" standalone="yes
 	</worksheet>`;
 
 const SHAREDSTRINGS_XML = workbook => `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-	<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${workbook.stringcount}" uniqueCount="${workbook.stringcount}">
+	<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="${workbook.stringCount}" uniqueCount="${workbook.strings.length}">
 		${workbook.strings.map(string => `
-		<si><t xml:space="preserve">${string}</t></si>
+		<si><t>${string}</t></si>
 		`).join('\n')}
 	</sst>`;
 
@@ -96,13 +114,11 @@ const WORKBOOK_XML = workbook => `<?xml version="1.0" encoding="UTF-8" standalon
 		<workbookPr backupFile="false" showObjects="all" date1904="false"/>
 		<workbookProtection/>
 		<bookViews>
-			<workbookView showHorizontalScroll="true" showVerticalScroll="true" showSheetTabs="true"
-				xWindow="0" yWindow="0" windowWidth="1024" windowHeight="768" tabRatio="500" firstSheet="0"
-				activeTab="0"/>
+			<workbookView xWindow="0" yWindow="0" windowWidth="1020" windowHeight="765" tabRatio="500"/>
 		</bookViews>
 		<sheets>
 			${workbook.sheets.map(sheet => `
-			<sheet name="${sheet.title}" sheetId="${sheet.id}" state="visible" r:id="${sheet.rId}"/>
+			<sheet name="${sheet.title}" sheetId="${sheet.id}" r:id="${sheet.rId}"/>
 			`).join('\n')}
 		</sheets>
 	</workbook>`;
@@ -111,8 +127,6 @@ const CONTENT_TYPES_XML = workbook => `<?xml version="1.0" encoding="UTF-8"?>
 	<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
 		<Default Extension="xml" ContentType="application/xml"/>
 		<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
-		<Default Extension="png" ContentType="image/png"/>
-		<Default Extension="jpeg" ContentType="image/jpeg"/>
 		<Override PartName="/xl/_rels/workbook.xml.rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
 		<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>
 		${workbook.sheets.map(sheet => `
@@ -140,9 +154,10 @@ const toAlpha = (number) => {
 
 export const generate = (sheets) => {
 	let workbook = {
-		isoDate: new Date().toISOString(),
+		isoDate: new Date().toISOString().slice(0, -2) + 'Z',
 		sheets: [],
-		strings: []
+		strings: [],
+		stringCount: 0
 	};
 
 	let i = 0;
@@ -163,6 +178,7 @@ export const generate = (sheets) => {
 					value = cell;
 				if (type === 's') {
 					value = workbook.strings.indexOf(cell);
+					workbook.stringCount++;
 					if (value === -1) {
 						workbook.strings.push(cell);
 						value = workbook.strings.length - 1;
@@ -176,7 +192,6 @@ export const generate = (sheets) => {
 		let extent = toAlpha(colCount) + rowCount;
 		workbook.sheets.push({ id, rId, title, rows, extent });
 	}
-	workbook.stringcount = workbook.strings.length;
 
 	var zip = new JSZip();
 
