@@ -1,6 +1,4 @@
-//const spawn = require('child_process').spawn;
-
-const TinyXLSX = require('./src/index');
+const TinyXLSX = require('.');
 const tap = require('tap');
 const XLSX = require('xlsx');
 const fs = require('fs');

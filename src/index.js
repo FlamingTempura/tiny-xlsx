@@ -1,5 +1,4 @@
-//import * as JSZip from 'jszip';
-let JSZip = require('jszip');
+import JSZip from 'jszip';
 
 let isNode = typeof module !== 'undefined' && module.exports,
 	fs;
@@ -139,7 +138,7 @@ const toAlpha = (number) => {
 	return letters;
 };
 
-const generate = (sheets) => {
+export const generate = (sheets) => {
 	let workbook = {
 		isoDate: new Date().toISOString(),
 		sheets: [],
@@ -216,4 +215,4 @@ const generate = (sheets) => {
 	};
 };
 
-module.exports = { generate };
+export default { generate };

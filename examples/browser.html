@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><title>TinyXLSX Example</title></head>
+<body>
+
+<script src="../tiny-xlsx.js"></script>
+<script>
+
+let summary = [
+	['Annual Sales',  40000 ],
+	['Costs',         30000 ],
+	['Profit',        10000 ]
+];
+
+let transactions = [
+	['Date',       'Description',       'Amount'],
+	['2017-01-01', 'Sales',               200   ],
+	['2017-01-01', 'Sales',               -20   ],
+	['2017-01-01', 'Sales',              1200   ],
+	['2017-01-01', 'Sales',               -10.5 ]
+];
+
+let sheets = [
+	{ title: 'Summary', data: summary },
+	{ title: 'Transactions', data: transactions }
+];
+
+var a = document.createElement("a");
+document.body.appendChild(a);
+a.style = 'display: none';
+const download = (filename, blob) => {
+	var url = window.URL.createObjectURL(blob);
+	a.href = url;
+	a.download = filename;
+	a.click();
+	window.URL.revokeObjectURL(url);
+};
+
+window.TinyXLSX.generate(sheets)
+	.blob()
+	.then(blob => download('test.xlsx', blob));
+</script>
+
+</body>

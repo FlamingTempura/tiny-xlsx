@@ -5,7 +5,7 @@ Tiny JavaScript XLSX writer.
 
 ### Node.js
 
-npm install tiny-xlsx
+`npm install tiny-xlsx`
 
 ```js
 import TinyXLSX from 'tiny-xlsx';
@@ -27,11 +27,11 @@ let transactions = [
 let sheets = [
 	{ title: 'Summary', data: summary },
 	{ title: 'Transactions', data: transactions }
-]
+];
 
 TinyXLSX.generate(sheets)
 	.write('accounts.xlsx')
-	.then(() => console.log('done!'))
+	.then(() => console.log('done!'));
 ```
 
 ### Browser
