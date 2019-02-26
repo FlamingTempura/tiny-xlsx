@@ -51,7 +51,7 @@ let sheets = [{ title: 'Hello World', data }];
 TinyXLSX.generate(sheets)
 	.base64()
 	.then(base64 => {
-		location.href = "data:application/zip;base64," + base64;
+		location.href = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + base64;
 	});
 
 </script>
