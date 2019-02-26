@@ -37,7 +37,7 @@ TinyXLSX.generate(sheets)
 
 
 ```html
-<script script="tiny-xlsx"></script>
+<script script="https://unpkg.com/tiny-xlsx"></script>
 
 <script>
 
