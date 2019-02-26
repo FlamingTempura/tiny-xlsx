@@ -46,7 +46,7 @@ let data = [
 	['hello', 'world']
 ];
 
-let sheets = { title: 'Hello World', data };
+let sheets = [{ title: 'Hello World', data }];
 
 TinyXLSX.generate(sheets)
 	.base64()
