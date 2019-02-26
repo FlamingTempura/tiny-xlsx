@@ -1,6 +1,6 @@
 ## TinyXLSX
 
-JavaScript XLSX spreadsheet writer for Node.js and browsers.
+XLSX spreadsheet writer for Node.js and browsers.
 
 ### Node.js
 
