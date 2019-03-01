@@ -16,8 +16,8 @@ let data2 = [
 	{ title: 'blah', data: [[1, 2, 3]] }
 ];
 
-let loadXLSX = () => {
-	let workbook = XLSX.readFile('tmp.xlsx');
+let loadXLSX = filename => {
+	let workbook = XLSX.readFile(filename);
 	return workbook.SheetNames.map(title => ({
 		title,
 		data: XLSX.utils.sheet_to_json(workbook.Sheets[title], { header: 1 })
