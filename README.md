@@ -1,6 +1,6 @@
-## tiny-xlsx
+## TinyXLSX
 
-Tiny JavaScript XLSX writer for Node.js and browsers.
+XLSX spreadsheet writer for Node.js and browsers.
 
 ### Node.js
 
@@ -37,7 +37,7 @@ TinyXLSX.generate(sheets)
 
 
 ```html
-<script script="tiny-xlsx"></script>
+<script script="https://unpkg.com/tiny-xlsx"></script>
 
 <script>
 
